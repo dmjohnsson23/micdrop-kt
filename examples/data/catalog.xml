@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+  <product id="P001">
+    <name>Laptop Pro 15</name>
+    <category>Electronics</category>
+    <price currency="USD">1299.99</price>
+    <inStock>true</inStock>
+    <quantity>45</quantity>
+    <specifications>
+      <processor>Intel Core i7-13700H</processor>
+      <ram>16GB DDR5</ram>
+      <storage>512GB NVMe SSD</storage>
+      <display>15.6" FHD IPS</display>
+      <graphics>NVIDIA RTX 4060</graphics>
+    </specifications>
+    <images>
+      <image type="thumbnail">laptop-thumb.jpg</image>
+      <image type="main">laptop-main.jpg</image>
+    </images>
+    <ratings>
+      <average>4.5</average>
+      <count>127</count>
+    </ratings>
+  </product>
+  <product id="P002">
+    <name>Wireless Mouse</name>
+    <category>Accessories</category>
+    <price currency="USD">29.99</price>
+    <inStock>true</inStock>
+    <quantity>230</quantity>
+    <specifications>
+      <connectivity>Bluetooth 5.0</connectivity>
+      <battery>2x AA</battery>
+      <dpi>1600</dpi>
+      <buttons>6</buttons>
+    </specifications>
+    <images>
+      <image type="thumbnail">mouse-thumb.jpg</image>
+      <image type="main">mouse-main.jpg</image>
+    </images>
+    <ratings>
+      <average>4.7</average>
+      <count>89</count>
+    </ratings>
+  </product>
+</catalog>
