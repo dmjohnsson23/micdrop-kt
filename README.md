@@ -658,6 +658,30 @@ This is built into `migrate`, which commits a sink when it is done and rolls it 
 take("a").dump("before").parseInt().dump("after").put("A")
 ```
 
+## Command-line runner
+
+The `cli` project bundles micdrop, jOOQ, jsoup, SQLite's JDBC driver and the Kotlin compiler into a standalone
+application. Build it with `./gradlew :cli:installDist`, which creates `cli/build/install/micdrop/` (put its `bin`
+directory on your `PATH`; it needs Java 24 or later), and run a script with:
+
+    micdrop my_script.micdrop.kts [args...]
+
+Scripts need no `package` or `import` lines for micdrop (`org.example` and its `ext` packages are imported
+automatically), and have the command-line arguments in `args`. Further libraries come from Maven with
+`@file:DependsOn("group:artifact:version")` (and `@file:Repository("https://...")` for repositories other than Maven
+Central). A script that fails exits with a nonzero status.
+
+### A self-contained bundle
+
+To run it on machines without Java, `./gradlew :cli:appImageTar` uses `jpackage` to create
+`cli/build/distributions/micdrop-bundle.tar.gz`: a native launcher, a private Java runtime and the jars, about 170 MB.
+Unpack it anywhere (say `/opt`) and link `micdrop/bin/micdrop` into your `PATH`; nothing else needs installing. (On
+Windows the launcher is `micdrop.exe` in the top directory.)
+
+`jpackage` only builds for the operating system it runs on. To make the Linux bundle from another system, run
+`docker/build-linux-bundle.sh` (it needs Docker). Set `BASE_IMAGE` to a distribution no newer than your servers', since
+a binary built against a newer glibc may not start on an older one.
+
 ## Examples
 
 The `examples` directory has three complete migrations, ported from the Ruby version, with sample data in
