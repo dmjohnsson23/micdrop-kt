@@ -54,14 +54,14 @@ class SkipStopTest {
     @Test
     fun stopFromApply() {
         val pipeline: Pipeline = { stopIf(6) }
-        val out = run { take("a").apply(pipeline).put("a") }
+        val out = run { take("a").pipe(pipeline).put("a") }
         check(expected(1, 2, 3, 4, 5), out)
     }
 
     @Test
     fun skipFromApply() {
         val pipeline: Pipeline = { if (value in listOf(1, 3, 6, 9)) skip() }
-        val out = run { take("a").apply(pipeline).put("a") }
+        val out = run { take("a").pipe(pipeline).put("a") }
         check(expected(2, 4, 5, 7, 8, 10), out)
     }
 

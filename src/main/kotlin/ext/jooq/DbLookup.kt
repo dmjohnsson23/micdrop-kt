@@ -1,7 +1,6 @@
 package org.example.ext.jooq
 
 import org.example.ItemContext
-import org.example.Pipeline
 import org.example.PipelineError
 import org.jooq.DSLContext
 import org.jooq.exception.DataAccessException
@@ -51,28 +50,12 @@ class DbLookup(
 }
 
 /**
- * Look up the value in a database, using a [DbLookup]. If nothing is found: [onNotFound] (if given) is applied to the
- * item; otherwise the value passes through unchanged if [passIfNotFound], or becomes null if not. A warning is
- * printed if [warnIfNotFound]. Null values are left alone.
+ * Look up the value in a database, using a [DbLookup]. Throws a [PipelineError] if nothing is found; use
+ * [ItemContext.pipeOrSetNull] and friends to recover. Null values are left alone.
  */
-fun ItemContext.dbLookup(
-    lookup: DbLookup,
-    passIfNotFound: Boolean = false,
-    onNotFound: Pipeline? = null,
-    warnIfNotFound: Boolean = onNotFound == null,
-): ItemContext = transform { key ->
-    val found = lookup.find(key)
-    when {
-        found != null -> found.value
-        else -> {
-            if (warnIfNotFound) System.err.println("Value $key not found in db lookup")
-            when {
-                onNotFound != null -> apply(onNotFound).value
-                passIfNotFound -> key
-                else -> null
-            }
-        }
-    }
+fun ItemContext.dbLookup(lookup: DbLookup): ItemContext = transform { key ->
+    val found = lookup.find(key) ?: throw PipelineError("Value $key not found in db lookup")
+    found.value
 }
 
 /** Look up the value in a database table, without caching. See [DbLookup]. */
@@ -81,7 +64,4 @@ fun ItemContext.dbLookup(
     table: String,
     keyColumn: String,
     valueColumn: String? = null,
-    passIfNotFound: Boolean = false,
-    onNotFound: Pipeline? = null,
-    warnIfNotFound: Boolean = onNotFound == null,
-): ItemContext = dbLookup(DbLookup(ctx, table, keyColumn, valueColumn), passIfNotFound, onNotFound, warnIfNotFound)
+): ItemContext = dbLookup(DbLookup(ctx, table, keyColumn, valueColumn))

@@ -9,9 +9,10 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class ItemContextTest {
-    // region value / convert / apply
+    // region value / convert / pipe
 
     @Test
     fun valueIsReadableAndSettable() {
@@ -45,33 +46,56 @@ class ItemContextTest {
     @Test
     fun applyRunsAPipeline() {
         val ctx = itemOf("10")
-        assertSame(ctx, ctx.apply { parseInt() })
+        assertSame(ctx, ctx.pipe { parseInt() })
         check(10, ctx.value)
     }
 
     @Test
     fun applyAcceptsAReusablePipeline() {
         val plusOne: Pipeline = { convert { (it as Int) + 1 } }
-        check(3, itemOf(1).apply(plusOne).apply(plusOne).value)
+        check(3, itemOf(1).pipe(plusOne).pipe(plusOne).value)
     }
 
     @Test
-    fun applyOrSetNull() {
-        check(10, itemOf("10").applyOrSetNull { parseInt() }.value)
-        assertNull(itemOf("ten").applyOrSetNull { parseInt() }.value)
+    fun pipeOrSetNull() {
+        check(10, itemOf("10").pipeOrSetNull { parseInt() }.value)
+        assertNull(itemOf("ten").pipeOrSetNull { parseInt() }.value)
     }
 
     @Test
-    fun applyOrRevertRestoresThePreviousValue() {
-        val ctx = itemOf("ten").applyOrRevert { strip(); parseInt() }
+    fun pipeOrRevertRestoresThePreviousValue() {
+        val ctx = itemOf("ten").pipeOrRevert { strip(); parseInt() }
         check("ten", ctx.value)
     }
 
     @Test
-    fun applyOrFallback() {
-        val ctx = itemOf("ten").applyOrFallback({ parseInt() }, { update(0) })
+    fun pipeOrFallback() {
+        val ctx = itemOf("ten").pipeOrFallback({ parseInt() }, { update(0) })
         check(0, ctx.value)
-        check(5, itemOf("5").applyOrFallback({ parseInt() }, { update(0) }).value)
+        check(5, itemOf("5").pipeOrFallback({ parseInt() }, { update(0) }).value)
+    }
+
+    @Test
+    fun pipeOrFamilyWarnsOnStderrOnlyWhenAsked() {
+        fun stderrOf(block: () -> Unit): String {
+            val original = System.err
+            val captured = java.io.ByteArrayOutputStream()
+            System.setErr(java.io.PrintStream(captured))
+            try {
+                block()
+            } finally {
+                System.setErr(original)
+            }
+            return captured.toString()
+        }
+        check("", stderrOf { itemOf("ten").pipeOrSetNull { parseInt() } })
+        check("", stderrOf { itemOf("ten").pipeOrRevert { parseInt() } })
+        check("", stderrOf { itemOf("ten").pipeOrFallback({ parseInt() }, { update(0) }) })
+        val setNull = stderrOf { itemOf("ten").pipeOrSetNull(warn = "Bad number") { parseInt() } }
+        val revert = stderrOf { itemOf("ten").pipeOrRevert(warn = "Bad number") { parseInt() } }
+        val fallback = stderrOf { itemOf("ten").pipeOrFallback({ parseInt() }, { update(0) }, warn = "Bad number") }
+        for (out in listOf(setNull, revert, fallback)) assertTrue(out.startsWith("Bad number: "), out)
+        check("", stderrOf { itemOf("10").pipeOrSetNull(warn = "Bad number") { parseInt() } })
     }
 
     // endregion
@@ -398,19 +422,24 @@ class ItemContextTest {
     }
 
     @Test
-    fun lookupOfAnUnknownValueIsNullByDefault() {
-        assertNull(itemOf("C").lookup(mapOf("A" to 1), warnIfNotFound = false).value)
+    fun lookupOfAnUnknownValueThrows() {
+        assertFailsWith<PipelineError> { itemOf("C").lookup(mapOf("A" to 1)) }
+    }
+
+    @Test
+    fun lookupCanBeRecoveredToNullOnAnUnknownValue() {
+        assertNull(itemOf("C").pipeOrSetNull { lookup(mapOf("A" to 1)) }.value)
     }
 
     @Test
     fun lookupCanPassTheOriginalValueOnAnUnknownValue() {
-        val ctx = itemOf("C").lookup(mapOf("A" to 1), warnIfNotFound = false, passIfNotFound = true)
+        val ctx = itemOf("C").pipeOrRevert { lookup(mapOf("A" to 1)) }
         check("C", ctx.value)
     }
 
     @Test
-    fun lookupCanApplyAPipelineOnAnUnknownValue() {
-        val ctx = itemOf("C").lookup(mapOf("A" to 1), onNotFound = { update(3) })
+    fun lookupCanFallBackToAPipelineOnAnUnknownValue() {
+        val ctx = itemOf("C").pipeOrFallback({ lookup(mapOf("A" to 1)) }, { update(3) })
         check(3, ctx.value)
     }
 

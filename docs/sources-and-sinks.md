@@ -361,8 +361,8 @@ take("country") {
 ```
 
 Finds the first row whose `keyColumn` equals the value, and gives its `valueColumn` (or, with no `valueColumn`, the
-whole row as a map, which you can `extract` from). A value that isn't found is handled like for `lookup`:
-`passIfNotFound`, `onNotFound { }` and `warnIfNotFound` do the same. A row that is found but has null in the value
+whole row as a map, which you can `extract` from). A value that isn't found throws a `PipelineError`, like for `lookup`; wrap
+the call in `pipeOrSetNull { }`, `pipeOrRevert { }` or `pipeOrFallback` to recover. A row that is found but has null in the value
 column gives null; it is not "not found".
 
 Each lookup is a query. For repeated values, create a `DbLookup` once, outside the migration, with `cache = true`

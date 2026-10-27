@@ -68,7 +68,7 @@ fun Elements.asSource(): Source {
     return (this as Iterable<*>).asSource()
 }
 
-private val BOM = 0xFEFF.toChar().toString()
+private const val BOM = 0xFEFF.toChar().toString()
 
 private fun requireWellFormed(xml: String, wrapIn: String? = null) {
     val text = if (wrapIn == null) xml else "<$wrapIn>$xml</$wrapIn>"

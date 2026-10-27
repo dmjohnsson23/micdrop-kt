@@ -391,9 +391,9 @@ applied:
 val defaultZero: Pipeline = { default(0) }
 
 migrate(source, sink) {
-    take("a").apply(defaultZero).put("A")
+    take("a").pipe(defaultZero).put("A")
     take("b") {
-        apply(defaultZero)
+        pipe(defaultZero)
         put("B")
     }
 }
@@ -424,14 +424,14 @@ transform](docs/extending.md#transforms) as an extension function so it chains l
 ```kotlin
 migrate(source, sink) {
     take("sex") {
-        lookup(mapOf("M" to "Male", "F" to "Female"), passIfNotFound = true)
+        pipeOrRevert { lookup(mapOf("M" to "Male", "F" to "Female")) }
         put("sex")
     }
 }
 ```
 
-By default an unknown value becomes null (with a warning on stderr). `passIfNotFound = true` keeps the original
-instead, and `onNotFound = { ... }` runs a pipeline on it. For lookups used in many places, register them once and
+An unknown value throws a `PipelineError`. Wrap the lookup in `pipeOrRevert { }` to keep the original value instead,
+`pipeOrSetNull { }` to make it null, or `pipeOrFallback({ lookup(...) }, { ... })` to run another pipeline on it. For lookups used in many places, register them once and
 refer to them by name:
 
 ```kotlin
@@ -445,17 +445,17 @@ migrate(source, sink) {
 ## Handling bad data
 
 Transforms throw on values they can't handle (`ValueError`, or the usual JDK exceptions like `NumberFormatException`
-and `DateTimeParseException`), which stops the migration. When the data is expected to be messy, use the `applyOr...`
+and `DateTimeParseException`), which stops the migration. When the data is expected to be messy, use the `pipeOr...`
 family to decide what happens instead:
 
 ```kotlin
 migrate(source, sink) {
     // null if it can't be parsed
-    take("age").applyOrSetNull { parseInt() }.put("age")
+    take("age").pipeOrSetNull { parseInt() }.put("age")
     // keep the original text if it can't be parsed
-    take("born").applyOrRevert { parseDate("MM/dd/yyyy") }.put("born")
+    take("born").pipeOrRevert { parseDate("MM/dd/yyyy") }.put("born")
     // try something else
-    take("zip").applyOrFallback({ parseInt() }, { nullIf("N/A") }).put("zip")
+    take("zip").pipeOrFallback({ parseInt() }, { nullIf("N/A") }).put("zip")
 }
 ```
 

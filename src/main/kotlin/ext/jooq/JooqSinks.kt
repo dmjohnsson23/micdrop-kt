@@ -41,7 +41,7 @@ abstract class JooqSink internal constructor(protected val session: JooqSession,
         session.dsl.update(tableRef).set(fieldMap(values)).where(condition).execute()
     }
 
-    protected fun generatedId(): Any? = statement("read the new ID of") { session.dsl.lastID().toLong() }
+    protected fun generatedId(): Any = statement("read the new ID of") { session.dsl.lastID().toLong() }
 
     private fun fieldMap(values: Map<*, *>): Map<Field<Any?>, Any?> =
         values.entries.associate { (key, value) -> fieldOf(key.toString()) to value }

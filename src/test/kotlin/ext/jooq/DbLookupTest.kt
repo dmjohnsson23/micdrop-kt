@@ -3,10 +3,11 @@ package org.example.ext.jooq
 import org.example.Collector
 import org.example.asSink
 import org.example.check
+import org.example.PipelineError
 import org.example.migrate
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class DbLookupTest : InMemoryDatabaseTest() {
     private val expected = listOf(
@@ -72,18 +73,23 @@ class DbLookupTest : InMemoryDatabaseTest() {
     }
 
     @Test
-    fun anUnknownKeyBecomesNull() {
-        assertNull(lookupOne(99) { dbLookup(db, "people", "id", "first_name", warnIfNotFound = false) })
+    fun anUnknownKeyThrows() {
+        assertFailsWith<PipelineError> { lookupOne(99) { dbLookup(db, "people", "id", "first_name") } }
+    }
+
+    @Test
+    fun anUnknownKeyCanBecomeNull() {
+        assertNull(lookupOne(99) { pipeOrSetNull { dbLookup(db, "people", "id", "first_name") } })
     }
 
     @Test
     fun anUnknownKeyCanPassThrough() {
-        check(99, lookupOne(99) { dbLookup(db, "people", "id", "first_name", passIfNotFound = true, warnIfNotFound = false) })
+        check(99, lookupOne(99) { pipeOrRevert { dbLookup(db, "people", "id", "first_name") } })
     }
 
     @Test
     fun anUnknownKeyCanRunAPipeline() {
-        check("Unknown", lookupOne(99) { dbLookup(db, "people", "id", "first_name", onNotFound = { update("Unknown") }) })
+        check("Unknown", lookupOne(99) { pipeOrFallback({ dbLookup(db, "people", "id", "first_name") }, { update("Unknown") }) })
     }
 
     @Test
@@ -91,7 +97,7 @@ class DbLookupTest : InMemoryDatabaseTest() {
         db.execute("insert into people (id, first_name, last_name) values (10, 'Nameless', null)")
         // found, with a null last name: not passed through, not handled as missing
         val value = lookupOne(10) {
-            dbLookup(db, "people", "id", "last_name", passIfNotFound = true, onNotFound = { update("MISSING") })
+            pipeOrFallback({ dbLookup(db, "people", "id", "last_name") }, { update("MISSING") })
         }
         assertNull(value)
     }
@@ -100,19 +106,6 @@ class DbLookupTest : InMemoryDatabaseTest() {
     fun theKeyColumnNeedNotBeUnique() {
         // The first match is used
         check(true, lookupOne(1) { dbLookup(db, "inventory", "person", "asset_type") } in listOf(4, 3))
-    }
-
-    @Test
-    fun unqualifiedWarningGoesToStandardError() {
-        val original = System.err
-        val captured = java.io.ByteArrayOutputStream()
-        System.setErr(java.io.PrintStream(captured))
-        try {
-            lookupOne(99) { dbLookup(db, "people", "id", "first_name") }
-        } finally {
-            System.setErr(original)
-        }
-        assertTrue("99" in captured.toString() && "not found" in captured.toString(), captured.toString())
     }
 
     // region caching

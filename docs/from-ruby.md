@@ -9,15 +9,17 @@ reshaped for Kotlin.
 |---|---|
 | `Micdrop.migrate source, sink do ... end` | `migrate(source, sink) { ... }` |
 | `take :a, put: "A"` | `take("a").put("A")` |
-| `take :a, apply: pipeline, put: "A"` | `take("a").apply(pipeline).put("A")` |
+| `take :a, apply: pipeline, put: "A"` | `take("a").pipe(pipeline).put("A")` |
 | `take :a, convert: ->(v) { v + 1 }` | `take("a").convert { (it as Int) + 1 }` |
 | `take(:a) { ... }` | `take("a") { ... }` |
 | `take(:a).default(0).put(:b)` | `take("a").default(0).put("b")` |
 | `proc { default 0 }` | `val p: Pipeline = { default(0) }` |
-| `apply default_0` | `apply(defaultZero)` |
+| `apply default_0` | `pipe(defaultZero)` |
 | `parse_date "%m/%d/%y"` | `parseDate("MM/dd/yy")` |
 | `put_bury :a, :b` | `putBury("a", "b")` |
 
+* The `apply` function from Ruby was renamed to `pipe` to avoid confusion with Kotlin's native `apply`
+  context function.
 * `take`, `put`, `apply` and `convert` options were dropped from `take` and friends in favor of blocks and chaining,
   which already did the same job.
 * Function names are camelCase: `parse_int` is `parseInt`, `each_subrecord` is `eachSubrecord`, and so on.
@@ -38,8 +40,9 @@ reshaped for Kotlin.
   no effort; other types need a [record adapter](extending.md#record-types).
 * **Collectors are `MutableMap<Any?, Any?>`**, not "anything with `[]=`". Sinks may supply their own pre-filled map.
 * **JSON** parses to plain Kotlin maps and lists: `Long` for integers and `Double` for the rest.
-* **`lookup`**: registered lookups are referred to by name (`"sex"`, not `:sex`). The unknown-value options are
-  `passIfNotFound`, `onNotFound` and `warnIfNotFound`.
+* **`lookup`**: registered lookups are referred to by name (`"sex"`, not `:sex`). The unknown-value options (
+  `pass_if_not_found`, `on_not_found` and `warn_if_not_found`) are not present, use `pipeOrSetNull`, `pipeOrRevert`, 
+  or `pipeOrFallback` instead.
 * **`regex`** takes a `Regex`; named and numbered groups are takeable.
 * **Hooks** receive the root context and the collector as arguments, as in Ruby, and several can be registered.
 * **Sources and sinks close automatically**, and implement `AutoCloseable`. `Source.entries()` gives a `Sequence`
@@ -78,7 +81,7 @@ reshaped for Kotlin.
 
 ## New in the Kotlin version
 
-* `applyOrSetNull`, `applyOrRevert` and `applyOrFallback` for recovering from bad values
+* `pipeOrSetNull`, `pipeOrRevert` and `pipeOrFallback` for recovering from bad values
 * `tryTake` and strict `take`
 * `nullIf`, `nullIfEmpty`, `skipIf`, `stopIf` and friends
 * `splitKv`/`joinKv` with a block form, `takeDig`/`extractDig`, `extract(range)`

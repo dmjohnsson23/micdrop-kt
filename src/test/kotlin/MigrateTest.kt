@@ -30,8 +30,8 @@ class MigrateTest {
         val plusser: Pipeline = { update((value as Int) + 1) }
         val timeser: Pipeline = { convert { (it as Int) * 2 } }
         val out = run(abSource) {
-            take("a").apply(plusser).put("A")
-            take("b") { apply(timeser); put("B") }
+            take("a").pipe(plusser).put("A")
+            take("b") { pipe(timeser); put("B") }
         }
         check(
             listOf(mapOf("A" to 2, "B" to 4), mapOf("A" to 4, "B" to 8), mapOf("A" to 6, "B" to 12)),
@@ -159,13 +159,13 @@ class MigrateTest {
     }
 
     @Test
-    fun applyOrSetNullDoesNotSwallowControlFlow() {
+    fun pipeOrSetNullDoesNotSwallowControlFlow() {
         val out = run(listOf(mapOf("a" to "x"), mapOf("a" to "5"))) {
-            take("a").applyOrSetNull { parseInt() }.put("A")
+            take("a").pipeOrSetNull { parseInt() }.put("A")
         }
         check(listOf(mapOf<Any?, Any?>("A" to null), mapOf("A" to 5)), out)
         val skipped = run(listOf(mapOf("a" to "x"))) {
-            take("a").applyOrSetNull { skip() }.put("A")
+            take("a").pipeOrSetNull { skip() }.put("A")
         }
         check(emptyList<Any?>(), skipped)
     }
@@ -254,7 +254,7 @@ class MigrateTest {
     fun lookups() {
         ItemContext.registerLookup("sex", mapOf("M" to "Male", "F" to "Female"))
         val out = run(listOf(mapOf("s" to "M"), mapOf("s" to "?"))) {
-            take("s").lookup("sex", passIfNotFound = true, warnIfNotFound = false).put("sex")
+            take("s").pipeOrRevert { lookup("sex") }.put("sex")
         }
         check(listOf(mapOf<Any?, Any?>("sex" to "Male"), mapOf("sex" to "?")), out)
     }

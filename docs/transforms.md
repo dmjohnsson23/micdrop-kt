@@ -57,14 +57,14 @@ The root context also exposes `source`, `sink`, `loopItem` (the source record), 
 | `value`, `originalValue` | The current value (a `var`), and the value the item started with. |
 | `update(value)` | Replace the value. |
 | `convert { value -> }` | Replace the value with the result of a Kotlin function. Also receives null. |
-| `apply(pipeline)` | Run a stored `Pipeline` on the item. |
-| `applyOrSetNull(pipeline)` | Run it; if it throws an `Exception`, the value becomes null. |
-| `applyOrRevert(pipeline)` | Run it; if it throws, restore the previous value. |
-| `applyOrFallback(pipeline, fallback)` | Run it; if it throws, restore the previous value and run `fallback`. |
+| `pipe(pipeline)` | Run a stored `Pipeline` on the item. |
+| `pipeOrSetNull(warn, pipeline)` | Run it; if it throws an `Exception`, the value becomes null. |
+| `pipeOrRevert(warn, pipeline)` | Run it; if it throws, restore the previous value. |
+| `pipeOrFallback(pipeline, fallback, warn)` | Run it; if it throws, restore the previous value and run `fallback`. All three print the `warn` message to stderr, followed by the error, when the pipeline fails (if `warn` is given). |
 | `dump(prefix)` | Print the value. |
 | `transform { value -> }` | Building block for your own transforms: replaces a non-null value with the result. |
 
-`Skip` and `Stop` (from `skip()` and `stop()`) are not `Exception`s and are never caught by the `applyOr...` family.
+`Skip` and `Stop` (from `skip()` and `stop()`) are not `Exception`s and are never caught by the `pipeOr...` family.
 
 ### Navigation
 
@@ -108,18 +108,18 @@ All date patterns are Java's, not strftime's: `MM/dd/yy`, not `%m/%d/%y`.
 
 ### Common operations
 
-| Function | Description |
-|---|---|
-| `lookup(map, passIfNotFound, onNotFound, warnIfNotFound)` | Convert through a map. Unknown values become null unless `passIfNotFound`, or `onNotFound` (a pipeline) handles them. A warning is printed for unknown values unless `warnIfNotFound = false`. |
-| `lookup(name, ...)` | The same with a lookup registered by `ItemContext.registerLookup(name, map)`. |
-| `dbLookup(db, table, keyColumn, valueColumn, ...)` | Convert through a query on a database table (needs [jOOQ](sources-and-sinks.md#databases); in `org.example.ext.jooq`). Takes the same `passIfNotFound`, `onNotFound` and `warnIfNotFound` as `lookup`. Also takes a `DbLookup` in place of the first four, for caching. |
-| `stringReplace(find, replace)` | Replace in text; `find` can be a `String` or a `Regex`. |
-| `strip()` | Trim whitespace from text. |
-| `default(value)` | Replace null with a value. |
-| `nullIfEmpty()` | Empty text, lists and maps become null. |
-| `nullIf(sentinel)` | A known value becomes null. |
-| `skipIfEmpty()`, `skipIf(sentinel)` | Skip the record. |
-| `stopIfEmpty()`, `stopIf(sentinel)` | Stop the migration. |
+| Function | Description                                                                                                                                                                                                                                                             |
+|---|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `lookup(map)` | Convert through a map. Unknown values case an error.                                                                                                                                                                                                                    |
+| `lookup(name)` | The same with a lookup registered by `ItemContext.registerLookup(name, map)`.                                                                                                                                                                                           |
+| `dbLookup(db, table, keyColumn, valueColumn, ...)` | Convert through a query on a database table (needs [jOOQ](sources-and-sinks.md#databases); in `org.example.ext.jooq`). An unknown value causes an error, like `lookup`. Also takes a `DbLookup` in place of the first four, for caching. |
+| `stringReplace(find, replace)` | Replace in text; `find` can be a `String` or a `Regex`.                                                                                                                                                                                                                 |
+| `strip()` | Trim whitespace from text.                                                                                                                                                                                                                                              |
+| `default(value)` | Replace null with a value.                                                                                                                                                                                                                                              |
+| `nullIfEmpty()` | Empty text, lists and maps become null.                                                                                                                                                                                                                                 |
+| `nullIf(sentinel)` | A known value becomes null.                                                                                                                                                                                                                                             |
+| `skipIfEmpty()`, `skipIf(sentinel)` | Skip the record.                                                                                                                                                                                                                                                        |
+| `stopIfEmpty()`, `stopIf(sentinel)` | Stop the migration.                                                                                                                                                                                                                                                     |
 
 ### Text and lists
 

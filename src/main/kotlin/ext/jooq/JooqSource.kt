@@ -44,7 +44,7 @@ class JooqSource(
             throw SourceError("Query failed: ${e.message}", e)
         }
         this@JooqSource.cursor = cursor
-        try {
+        cursor.use { cursor ->
             var index = 0
             while (true) {
                 val row = try {
@@ -52,11 +52,8 @@ class JooqSource(
                 } catch (e: DataAccessException) {
                     throw SourceError("Could not read row $index: ${e.message}", e)
                 } ?: break
-                @Suppress("UNCHECKED_CAST")
-                yield(SourceEntry(index++, Record.of(normalizeRow(row.intoMap() as Map<String, Any?>))))
+                yield(SourceEntry(index++, Record.of(normalizeRow(row.intoMap()))))
             }
-        } finally {
-            cursor.close()
         }
     }
 

@@ -158,7 +158,7 @@ class ParseMarkupTest {
 
     @Test
     fun parseXmlFailuresCanBeRecovered() {
-        assertNull(itemOf("<a><b></a>").applyOrSetNull { parseXml() }.value)
+        assertNull(itemOf("<a><b></a>").pipeOrSetNull { parseXml() }.value)
     }
 
     @Test

@@ -23,7 +23,7 @@ migrate(source, sink) {
 }
 ```
 
-Throw a `ValueError` when the value can't be handled; that is what `applyOrSetNull` and friends are for. If your
+Throw a `ValueError` when the value can't be handled; that is what `pipeOrSetNull` and friends are for. If your
 transform should also react to null (like `default` does), use `value` directly instead of `transform`:
 
 ```kotlin

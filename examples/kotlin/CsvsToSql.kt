@@ -98,8 +98,7 @@ object CsvsToSql {
             }
             // We can skip rows that don't have a value in this column. (CSV reads an empty field as null.)
             take("Phone") {
-                nullIfEmpty()
-                skipIf(null)
+                skipIfEmpty()
                 put("display")
             }
             // Plain Kotlin can be used in pipelines for complex transformations. Note that `stringReplace` would be

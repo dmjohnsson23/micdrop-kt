@@ -29,8 +29,11 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
         fun registerLookup(name: String, lookup: Map<*, *>) {
             lookups[name] = lookup
         }
+        
+        fun registerLookup(name: String, vararg lookup: Pair<*,*>) = registerLookup(name, lookup.toMap())
 
         private fun isEmpty(value: Any?) = when (value) {
+            null -> true
             is CharSequence -> value.isEmpty()
             is Collection<*> -> value.isEmpty()
             is Map<*, *> -> value.isEmpty()
@@ -69,42 +72,58 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
     }
 
     /** Apply a pre-defined pipeline to update the value */
-    fun apply(pipeline: Pipeline): ItemContext {
+    fun pipe(pipeline: Pipeline): ItemContext {
         pipeline(this)
         return this
     }
 
-    /** Attempt a potentially fallible pipeline, and set the value to null if it fails */
-    fun applyOrSetNull(pipeline: Pipeline): ItemContext {
+    /**
+     * Attempt a potentially fallible pipeline, and set the value to null if it fails. If [warn] is given, it is printed
+     * to stderr, followed by the error message.
+     */
+    fun pipeOrSetNull(warn: String? = null, pipeline: Pipeline): ItemContext {
         try {
             pipeline(this)
         } catch (e: Exception) {
+            warn?.let { warnFailed(it, e) }
             value = null
         }
         return this
     }
 
-    /** Attempt a potentially fallible pipeline, and restore the previous value if it fails */
-    fun applyOrRevert(pipeline: Pipeline): ItemContext {
+    /**
+     * Attempt a potentially fallible pipeline, and restore the previous value if it fails. If [warn] is given, it is
+     * printed to stderr, followed by the error message.
+     */
+    fun pipeOrRevert(warn: String? = null, pipeline: Pipeline): ItemContext {
         val revert = value
         try {
             pipeline(this)
         } catch (e: Exception) {
+            warn?.let { warnFailed(it, e) }
             value = revert
         }
         return this
     }
 
-    /** Attempt a potentially fallible pipeline, and run [fallback] from the previous value if it fails */
-    fun applyOrFallback(pipeline: Pipeline, fallback: Pipeline): ItemContext {
+    /**
+     * Attempt a potentially fallible pipeline, and run [fallback] from the previous value if it fails. If [warn] is
+     * given, it is printed to stderr, followed by the error message.
+     */
+    fun pipeOrFallback(pipeline: Pipeline, fallback: Pipeline, warn: String? = null): ItemContext {
         val revert = value
         try {
             pipeline(this)
         } catch (e: Exception) {
+            warn?.let { warnFailed(it, e) }
             value = revert
             fallback(this)
         }
         return this
+    }
+
+    private fun warnFailed(warn: String, e: Exception) {
+        System.err.println("$warn: ${e.message ?: e::class.simpleName}")
     }
 
     /** Debug tool to print the current value to the console */
@@ -279,7 +298,7 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
 
     /** Format the value with [String.format], or with `toString` if no template is given */
     fun formatString(template: String? = null): ItemContext = transform {
-        if (template == null) it.toString() else template.format(it)
+        template?.format(it) ?: it.toString()
     }
 
     // endregion
@@ -288,40 +307,22 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
 
     /**
      * Look up the value in a map.
-     *
-     * If there is no match: [onNotFound] (if given) is applied to the item; otherwise the value passes through
-     * unchanged if [passIfNotFound], or becomes null if not. A warning is printed if [warnIfNotFound].
      */
-    fun lookup(
-        mapping: Map<*, *>,
-        passIfNotFound: Boolean = false,
-        onNotFound: Pipeline? = null,
-        warnIfNotFound: Boolean = onNotFound == null,
-    ): ItemContext = transform {
+    fun lookup(mapping: Map<*, *>): ItemContext = transform {
         @Suppress("UNCHECKED_CAST")
         val map = mapping as Map<Any?, Any?>
         when {
             map.containsKey(it) -> map[it]
-            else -> {
-                if (warnIfNotFound) System.err.println("Value $it not found in lookup")
-                when {
-                    onNotFound != null -> apply(onNotFound).value
-                    passIfNotFound -> it
-                    else -> null
-                }
-            }
+            else -> throw PipelineError("Item not found in lookup: $it")
         }
     }
+    
+    fun lookup(vararg mapping: Pair<*,*>): ItemContext = lookup(mapping.toMap())
 
     /** Look up the value in a lookup previously registered with [registerLookup] */
-    fun lookup(
-        registeredLookup: String,
-        passIfNotFound: Boolean = false,
-        onNotFound: Pipeline? = null,
-        warnIfNotFound: Boolean = onNotFound == null,
-    ): ItemContext {
+    fun lookup(registeredLookup: String): ItemContext {
         val mapping = lookups[registeredLookup] ?: throw PipelineError("No lookup '$registeredLookup' found")
-        return lookup(mapping, passIfNotFound, onNotFound, warnIfNotFound)
+        return lookup(mapping)
     }
 
     /** Search and replace in a string. Converts the value to a string first if needed. */
@@ -344,7 +345,7 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
         return this
     }
 
-    /** Skip the record on empty strings, collections or maps */
+    /** Skip the record on null, empty strings, collections or maps */
     fun skipIfEmpty(): ItemContext {
         if (isEmpty(value)) skip()
         return this
@@ -356,7 +357,7 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
         return this
     }
 
-    /** Stop the migration on empty strings, collections or maps */
+    /** Stop the migration on null, empty strings, collections or maps */
     fun stopIfEmpty(): ItemContext {
         if (isEmpty(value)) stop()
         return this
@@ -444,7 +445,7 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
 
     /** Like [map], but the block is a pipeline run on each element, so all of the transforms are available */
     fun mapApply(pipeline: Pipeline): ItemContext = transform {
-        iterable(it).map { element -> ItemContext(recordContext, element).apply(pipeline).value }
+        iterable(it).map { element -> ItemContext(recordContext, element).pipe(pipeline).value }
     }
 
     /**

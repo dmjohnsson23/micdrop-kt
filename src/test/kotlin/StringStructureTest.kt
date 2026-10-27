@@ -161,7 +161,7 @@ class JsonTest {
 
     @Test
     fun invalidJsonCanBeRecoveredFrom() {
-        assertNull(itemOf("{nope").applyOrSetNull { parseJson() }.value)
+        assertNull(itemOf("{nope").pipeOrSetNull { parseJson() }.value)
     }
 
     @Test

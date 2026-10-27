@@ -343,9 +343,9 @@ class ReadmeExamplesTest {
         val defaultZero: Pipeline = { default(0) }
         val sink = sink()
         migrate(listOf(mapOf("a" to 1, "b" to null), mapOf("a" to null, "b" to 4)), sink) {
-            take("a").apply(defaultZero).put("A")
+            take("a").pipe(defaultZero).put("A")
             take("b") {
-                apply(defaultZero)
+                pipe(defaultZero)
                 put("B")
             }
         }
@@ -371,7 +371,7 @@ class ReadmeExamplesTest {
         val sink = sink()
         migrate(source, sink) {
             take("sex") {
-                lookup(mapOf("M" to "Male", "F" to "Female"), passIfNotFound = true, warnIfNotFound = false)
+                pipeOrRevert { lookup(mapOf("M" to "Male", "F" to "Female")) }
                 put("sex")
             }
         }
@@ -396,9 +396,9 @@ class ReadmeExamplesTest {
         )
         val sink = sink()
         migrate(source, sink) {
-            take("age").applyOrSetNull { parseInt() }.put("age")
-            take("born").applyOrRevert { parseDate("MM/dd/yyyy") }.put("born")
-            take("zip").applyOrFallback({ parseInt() }, { nullIf("N/A") }).put("zip")
+            take("age").pipeOrSetNull { parseInt() }.put("age")
+            take("born").pipeOrRevert { parseDate("MM/dd/yyyy") }.put("born")
+            take("zip").pipeOrFallback({ parseInt() }, { nullIf("N/A") }).put("zip")
         }
         check(
             listOf(
