@@ -46,14 +46,12 @@ class CsvSource(
     private val reader: Reader,
     private val headers: List<String>? = null,
     private val firstRowIsHeader: Boolean = true,
-    delimiter: Char = ',',
-    quote: Char = '"',
+    private val delimiter: Char = ',',
+    private val quote: Char = '"',
     private val trim: Boolean = false,
     private val closeReader: Boolean = true,
     private val liberalQuotes: Boolean = false,
 ) : Source {
-    private val delimiter = delimiter
-    private val quote = quote
     private val format = CSVFormat.DEFAULT.builder()
         .setDelimiter(delimiter)
         .setQuote(quote)

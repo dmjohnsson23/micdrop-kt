@@ -44,3 +44,7 @@ bin/
 ### Mac OS ###
 .DS_Store
 examples/test.db
+
+### "Dogfood" test scripts ###
+cli/src/test/kotlin/*ScriptTest.kt
+import-scripts/*
