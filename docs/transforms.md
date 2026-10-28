@@ -27,7 +27,7 @@ block.
 | `passthru(vararg names)` | `take(name).put(name)` for each name. |
 | `collectList(vararg items)` | An item whose value is the list of the given items' values. |
 | `collectKv(vararg name to item)` or `collectKv(map)` | An item whose value is a map of name to the item's value. |
-| `collectFormatString(template, vararg items)` | An item whose value is `template.format(...)` of the items' values. |
+| `collectFormatString(template, vararg items)` | An item whose value is `template.format(...)` of the items' values (nulls become empty text). |
 | `eachSubrecord(flush, reset) { }` | Shorthand for `takeWhole().eachSubrecord(...)`. |
 | `skip()` | Abandon this source record. |
 | `stop()` | End the migration. |
@@ -97,7 +97,7 @@ available on an item, so they can be used inside a `take` block.
 | `parseDate(format)` | To `LocalDate`. `format` is a `DateTimeFormatter` or a pattern string; the default is ISO (`2024-11-14`). Accepts existing dates and date-times. |
 | `parseDateTime(format)` | To `LocalDateTime`. The default format is `yyyy-MM-dd HH:mm:ss`. A `LocalDate` becomes midnight. |
 | `formatDate(format)` | Date, date-time (or any `TemporalAccessor`) to text. The default is ISO date. |
-| `formatDateTime(format)` | As above; the default is `yyyy-MM-dd HH:mm:ss`. |
+| `formatDateTime(format)` | As above; the default is `yyyy-MM-dd HH:mm:ss`. A `LocalDate` is formatted as midnight. |
 | `parseBoolean(trueValues, falseValues)` | To `Boolean`. By default accepts `1`, `true`, `yes`, `on`, `y` (several capitalizations) as true, and `0`, `false`, `no`, `off`, `n` and the empty string as false. Anything else is a `ValueError`. |
 | `formatBoolean(trueValue = "Yes", falseValue = "No")` | Boolean to something else. |
 | `formatString(template)` | `String.format(template, value)`, or `toString()` with no template. |
@@ -126,12 +126,12 @@ All date patterns are Java's, not strftime's: `MM/dd/yy`, not `%m/%d/%y`.
 | Function | Description |
 |---|---|
 | `split(delimiter) { }` | Text to a list. The optional block enters the list as a record (`take(0)`...). |
-| `join(delimiter)` | List to text. |
+| `join(delimiter)` | List to text. Null elements count as empty text. |
 | `splitKv(kvDelimiter, itemDelimiter = "\n") { }` | Text such as `a: 1\nb: 2` to a map. Splits each item at the first `kvDelimiter`; blank items are ignored; an item with no delimiter has a null value. The optional block enters the map. |
 | `joinKv(kvDelimiter, itemDelimiter = "\n")` | The reverse. |
 | `regex(pattern) { }` | Run `Regex.find`; the value becomes the match (or null, with a warning). The optional block enters the match, where groups are takeable by number (0 is the whole match) or by name. |
 | `coalesce()` | List to its first non-null element. |
-| `compact()` | Remove nulls from a list. |
+| `compact()` | Remove nulls from a list, or the entries with null values from a map. |
 | `filter { }` | Keep list elements matching a predicate. |
 | `map { }` | Transform each list element with a Kotlin function. |
 | `mapApply { }` | Transform each list element with a pipeline. |

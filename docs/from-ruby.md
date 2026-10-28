@@ -89,3 +89,4 @@ reshaped for Kotlin.
 * All-or-nothing migrations: `commit` and `rollback` for sinks, and transactional database sinks by default
 * Sharing one transaction between several sinks with `JooqSession`
 * A streaming XML source, `XmlSource`
+* A zip archive source, `ZipSource`, which can extract entries to disk

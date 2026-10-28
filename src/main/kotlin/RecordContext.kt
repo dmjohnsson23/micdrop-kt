@@ -73,9 +73,9 @@ abstract class RecordContext(val record: Record?) : Output {
 
     fun collectKv(vararg items: Pair<Any?, ItemContext>, block: Pipeline = {}) = collectKv(items.toMap(), block)
 
-    /** Collect the values of several already-taken items into a string, using [String.format] */
+    /** Collect the values of several already-taken items into a string, using [String.format]. Nulls become empty. */
     fun collectFormatString(template: String, vararg items: ItemContext, block: Pipeline = {}) =
-        item(template.format(*items.map { it.value }.toTypedArray()), block)
+        item(template.format(*items.map { it.value ?: "" }.toTypedArray()), block)
 
     /** Skip the current source record. Like `continue`. */
     fun skip(): Nothing = throw Skip()

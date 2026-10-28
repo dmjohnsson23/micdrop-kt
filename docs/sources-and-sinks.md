@@ -34,6 +34,8 @@ Each record is a `Map<String, String?>` keyed by column header, so `take("Name")
 | `firstRowIsHeader` (default true) | Whether the first row is a header row. With `headers` given, it is skipped and `headers` replaces it. With `firstRowIsHeader = false` and no `headers`, records are lists, taken by position (`take(0)`). |
 | `delimiter`, `quote` | The field delimiter and quote characters. |
 | `trim` | Strip whitespace around unquoted fields. |
+| `liberalQuotes` | Tolerate unescaped quotes inside quoted fields, such as `"Test "VFN""` (read as `Test "VFN"`). A quote only closes the field if a delimiter, line break or the end of the data follows it. Off by default; the Ruby version always did this. |
+| `liberalQuotes` | Tolerate unescaped quotes inside quoted fields, such as `"Test "VFN""` (read as `Test "VFN"`). A quote only closes the field if a delimiter, line break or the end of the data follows it. Off by default; the Ruby version always did this. |
 | `closeReader` | Whether closing the source closes the reader. |
 | `charset` | For `CsvSource.open` only. |
 
@@ -94,6 +96,27 @@ migrate(FilesSource("data", glob = "*.json"), sink) {
     take("content").parseJson {
         take("name").put("name")
     }
+}
+```
+
+### Zip archives: `ZipSource`
+
+Like `FilesSource`, but for the files inside a zip archive, indexed by their full name in the archive. Directory
+entries are skipped, and closing the source closes the archive.
+
+```kotlin
+ZipSource(Path.of("files.zip"))
+ZipSource("files.zip", glob = "docs/**.pdf")
+```
+
+An entry offers `content`, `bytes`, `stream`, `filename`, `basename`, `extension`, `size` and `mtime`, as for files.
+To write an entry to disk, use `extractTo(dir)` on the record, which keeps the entry's name and refuses names that
+would escape `dir`:
+
+```kotlin
+migrate(ZipSource("files.zip"), sink) {
+    (loopItem as ZipEntryRecord).extractTo(Path.of("upload"))
+    take("basename").put("name")
 }
 ```
 

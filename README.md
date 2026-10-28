@@ -255,7 +255,7 @@ migrate(source, sink) {
 // sink is now: [{person_id=1, phones=["(354) 756-4796","(234) 678-7564"]}]
 ```
 
-There are other list helpers: `filter`, `map`, `coalesce` (the first non-null element), `join`, and `mapApply`, which
+There are other list helpers: `filter`, `map`, `coalesce` (the first non-null element), `join` (nulls count as empty text), and `mapApply`, which
 runs a full pipeline on each element.
 
 `collectKv` does the same into a map, and `collectFormatString` into a string:

@@ -26,6 +26,41 @@ private class CountingReader(text: String) : Reader() {
     override fun close() { closed = true; inner.close() }
 }
 
+class CsvLiberalQuotesTest {
+    private fun rows(text: String, liberal: Boolean = true) =
+        CsvSource(StringReader(text), liberalQuotes = liberal).entries().map { it.record.raw }.toList()
+
+    @Test
+    fun strictByDefault() {
+        assertFailsWith<SourceError> { rows("a,b\n\"Test \"VFN\"\",x\n", liberal = false) }
+    }
+
+    @Test
+    fun strayQuotesInsideQuotedFieldsAreText() {
+        check(
+            listOf(mapOf("a" to "Test \"VFN\"", "b" to "x"), mapOf("a" to "5\" pipe, big", "b" to "y")),
+            rows("a,b\n\"Test \"VFN\"\",x\n\"5\" pipe, big\",y\n"),
+        )
+    }
+
+    @Test
+    fun wellFormedDataIsUnchanged() {
+        val text = "a,b,c\n\"x\"\"y\",\"\",\"line1\nline2\"\n\"ends with quote\"\"\",,z"
+        check(rows(text, liberal = false), rows(text))
+        check("ends with quote\"", (rows(text)[1] as Map<*, *>)["a"])
+    }
+
+    @Test
+    fun aQuoteAtTheEndOfTheDataClosesTheField() {
+        check(listOf(mapOf("a" to "q\"")), rows("a\n\"q\"\""))
+    }
+
+    @Test
+    fun unquotedFieldsKeepTheirQuotes() {
+        check(listOf(mapOf("a" to "5\" pipe", "b" to "y")), rows("a,b\n5\" pipe,y\n"))
+    }
+}
+
 class CsvSourceTest {
     @TempDir
     lateinit var dir: Path

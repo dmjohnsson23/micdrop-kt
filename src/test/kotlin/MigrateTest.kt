@@ -192,6 +192,14 @@ class MigrateTest {
     }
 
     @Test
+    fun collectFormatStringTreatsNullAsEmpty() {
+        val out = run(listOf(mapOf("a" to "x", "b" to null))) {
+            collectFormatString("[%s|%s]", take("a"), take("b")) { put("text") }
+        }
+        check(listOf(mapOf<Any?, Any?>("text" to "[x|]")), out)
+    }
+
+    @Test
     fun putBury() {
         val out = run(listOf(mapOf("h" to "1", "w" to null))) {
             take("h") { putBury("phones", "home") }

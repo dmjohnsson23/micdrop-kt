@@ -267,9 +267,13 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
 
     fun formatDate(pattern: String) = formatDate(DateTimeFormatter.ofPattern(pattern))
 
-    /** Format a date and time as a string */
+    /** Format a date and time as a string. A plain date is taken as midnight. */
     fun formatDateTime(format: DateTimeFormatter = DEFAULT_DATETIME_FORMAT): ItemContext = transform {
-        if (it is TemporalAccessor) format.format(it) else throw ValueError("Cannot format $it as a datetime")
+        when (it) {
+            is LocalDate -> format.format(it.atStartOfDay())
+            is TemporalAccessor -> format.format(it)
+            else -> throw ValueError("Cannot format $it as a datetime")
+        }
     }
 
     fun formatDateTime(pattern: String) = formatDateTime(DateTimeFormatter.ofPattern(pattern))
@@ -389,8 +393,8 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
         return this
     }
 
-    /** Join a list into a string */
-    fun join(delimiter: String): ItemContext = transform { iterable(it).joinToString(delimiter) }
+    /** Join a list into a string. Null elements count as empty text. */
+    fun join(delimiter: String): ItemContext = transform { iterable(it).joinToString(delimiter) { e -> e?.toString() ?: "" } }
 
     /**
      * Split a string into a map of key/value pairs. Items are separated by [itemDelimiter] (blank items are
@@ -436,8 +440,10 @@ class ItemContext(val recordContext: RecordContext, var value: Any?) {
     /** Replace a list with its first non-null element */
     fun coalesce(): ItemContext = transform { iterable(it).firstOrNull { e -> e != null } }
 
-    /** Remove nulls from a list */
-    fun compact(): ItemContext = transform { iterable(it).filterNotNull() }
+    /** Remove nulls from a list, or the entries with null values from a map */
+    fun compact(): ItemContext = transform {
+        if (it is Map<*, *>) it.filterValues { v -> v != null } else iterable(it).filterNotNull()
+    }
 
     fun filter(predicate: (Any?) -> Boolean): ItemContext = transform { iterable(it).filter(predicate) }
 

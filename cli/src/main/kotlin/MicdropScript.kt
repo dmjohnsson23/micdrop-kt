@@ -32,6 +32,9 @@ object MicdropScriptConfiguration : ScriptCompilationConfiguration({
     jvm {
         dependenciesFromCurrentContext(wholeClasspath = true)
     }
+    // The default target (1.8) can't inline the library's inline functions, like `transform`, which scripts use to
+    // define their own transforms
+    compilerOptions("-jvm-target", "24")
     refineConfiguration {
         onAnnotations(DependsOn::class, Repository::class, handler = ::resolveDependencies)
     }

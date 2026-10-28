@@ -222,7 +222,7 @@ class ReadmeExamplesTest {
             listOf(
                 mapOf(
                     "phones_by_kind" to """{"Home":null,"Work":"(354) 756-4796"}""",
-                    "contact" to "Home: null, Work: (354) 756-4796",
+                    "contact" to "Home: , Work: (354) 756-4796",
                 ),
             ),
             sink,

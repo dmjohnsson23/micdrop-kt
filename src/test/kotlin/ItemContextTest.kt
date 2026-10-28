@@ -351,6 +351,11 @@ class ItemContextTest {
     }
 
     @Test
+    fun formatDateTimeTakesADateAsMidnight() {
+        check("2024-11-14 00:00:00", itemOf(LocalDate.of(2024, 11, 14)).formatDateTime().value)
+    }
+
+    @Test
     fun parseBooleanHandlesNull() {
         assertNull(itemOf(null).parseBoolean().value)
     }
@@ -536,6 +541,11 @@ class ItemContextTest {
     }
 
     @Test
+    fun joinTreatsNullElementsAsEmpty() {
+        check("12345-", itemOf(listOf("12345", null)).join("-").value)
+    }
+
+    @Test
     fun joinFailsOnANonList() {
         assertFailsWith<ValueError> { itemOf(5).join(",") }
     }
@@ -552,6 +562,11 @@ class ItemContextTest {
     fun compact() {
         assertNull(itemOf(null).compact().value)
         check(listOf(1, 2), itemOf(listOf(null, 1, null, 2)).compact().value)
+    }
+
+    @Test
+    fun compactRemovesNullValuesFromAMap() {
+        check(mapOf("a" to 1, "c" to ""), itemOf(mapOf("a" to 1, "b" to null, "c" to "")).compact().value)
     }
 
     @Test
