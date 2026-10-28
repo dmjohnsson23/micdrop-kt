@@ -21,6 +21,7 @@ dependencies {
     // The library only compiles against these, so they are bundled here for scripts to use. Scripts needing other JDBC
     // drivers or libraries can pull them in with @file:DependsOn.
     runtimeOnly("org.jooq:jooq:3.21.9")
+    runtimeOnly("com.mysql:mysql-connector-j:9.1.0")
     runtimeOnly("org.jsoup:jsoup:1.23.2")
     runtimeOnly("org.xerial:sqlite-jdbc:3.53.4.0")
 
