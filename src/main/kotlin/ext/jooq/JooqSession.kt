@@ -1,6 +1,6 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.SinkError
+import micdrop.SinkError
 import org.jooq.DSLContext
 import org.jooq.exception.DataAccessException
 import org.jooq.impl.DefaultConnectionProvider

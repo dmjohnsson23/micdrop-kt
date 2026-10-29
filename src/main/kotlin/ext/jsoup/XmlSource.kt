@@ -1,9 +1,9 @@
-package org.example.ext.jsoup
+package micdrop.ext.jsoup
 
-import org.example.Record
-import org.example.Source
-import org.example.SourceEntry
-import org.example.SourceError
+import micdrop.Record
+import micdrop.Source
+import micdrop.SourceEntry
+import micdrop.SourceError
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 import java.io.Closeable

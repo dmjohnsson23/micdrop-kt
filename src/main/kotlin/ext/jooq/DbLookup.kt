@@ -1,7 +1,7 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.ItemContext
-import org.example.PipelineError
+import micdrop.ItemContext
+import micdrop.PipelineError
 import org.jooq.DSLContext
 import org.jooq.exception.DataAccessException
 

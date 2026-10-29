@@ -1,11 +1,11 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.Collector
-import org.example.MultiSink
-import org.example.Sink
-import org.example.asSource
-import org.example.check
-import org.example.migrate
+import micdrop.Collector
+import micdrop.MultiSink
+import micdrop.Sink
+import micdrop.asSource
+import micdrop.check
+import micdrop.migrate
 import org.jooq.impl.DSL
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -147,7 +147,7 @@ class DatabaseReadmeExamplesTest : InMemoryDatabaseTest() {
         check(2, good.rows.size)
 
         val bad = Target()
-        assertFailsWith<org.example.PipelineError> {
+        assertFailsWith<micdrop.PipelineError> {
             migrate(listOf(mapOf("a" to 1), mapOf("b" to 2)).asSource(), BatchingSink(bad)) { take("a").put("A") }
         }
         check(0, bad.rows.size)

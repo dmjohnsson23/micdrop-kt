@@ -1,9 +1,9 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.Record
-import org.example.Source
-import org.example.SourceEntry
-import org.example.SourceError
+import micdrop.Record
+import micdrop.Source
+import micdrop.SourceEntry
+import micdrop.SourceError
 import org.jooq.Cursor
 import org.jooq.DSLContext
 import org.jooq.ResultQuery

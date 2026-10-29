@@ -1,8 +1,8 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.Collector
-import org.example.Sink
-import org.example.SinkError
+import micdrop.Collector
+import micdrop.Sink
+import micdrop.SinkError
 import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.Field

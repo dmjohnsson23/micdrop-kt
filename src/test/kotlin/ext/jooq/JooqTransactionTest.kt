@@ -1,12 +1,12 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.Collector
-import org.example.MultiSink
-import org.example.SinkError
-import org.example.asSink
-import org.example.asSource
-import org.example.check
-import org.example.migrate
+import micdrop.Collector
+import micdrop.MultiSink
+import micdrop.SinkError
+import micdrop.asSink
+import micdrop.asSource
+import micdrop.check
+import micdrop.migrate
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
@@ -37,13 +37,13 @@ class JooqTransactionTest {
 
     private val newPeople = (10..14).map { mapOf("id" to it, "first_name" to "Person $it") }
 
-    private fun org.example.RootRecordContext.putPerson() {
+    private fun micdrop.RootRecordContext.putPerson() {
         take("id").put("id")
         take("first_name").put("first_name")
     }
 
     /** Fails on the record at [failAt], after earlier ones have been written */
-    private fun org.example.RootRecordContext.failAt(failAt: Int) {
+    private fun micdrop.RootRecordContext.failAt(failAt: Int) {
         if (index().value == failAt) throw IllegalStateException("boom at $failAt")
     }
 
@@ -394,7 +394,7 @@ class JooqSingleConnectionTransactionTest : InMemoryDatabaseTest() {
         db.execute("create table clients (id integer primary key autoincrement, name text, dob date, is_deceased boolean)")
         val sink = InsertSink(db, "clients")
         val ids = mutableListOf<Any?>()
-        migrate(org.example.ext.CsvSource(java.io.StringReader(csv)), sink) {
+        migrate(micdrop.ext.CsvSource(java.io.StringReader(csv)), sink) {
             take("Name").put("name")
             take("Born") { parseDate("MM/dd/yy"); put("dob") }
             take("Deceased?") { parseBoolean(); default(false); put("is_deceased") }

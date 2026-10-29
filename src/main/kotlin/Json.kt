@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json

@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -6,7 +6,7 @@ import kotlin.test.assertFailsWith
 class StructureBuilderTest {
     private val root: Collector = linkedMapOf()
 
-    private fun bury(value: Any?, vararg keys: Any?) = org.example.bury(root, keys.toList(), value)
+    private fun bury(value: Any?, vararg keys: Any?) = micdrop.bury(root, keys.toList(), value)
 
     @Test
     fun setsASimpleKey() {

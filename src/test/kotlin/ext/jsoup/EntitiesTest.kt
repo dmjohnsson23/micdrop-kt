@@ -1,7 +1,7 @@
-package org.example.ext.jsoup
+package micdrop.ext.jsoup
 
-import org.example.check
-import org.example.itemOf
+import micdrop.check
+import micdrop.itemOf
 import kotlin.test.Test
 import kotlin.test.assertNull
 import kotlin.test.assertSame

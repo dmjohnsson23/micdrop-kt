@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 /** One record from a [Source], along with whatever identifies it (a row number, a map key, etc.) */
 data class SourceEntry(val index: Any?, val record: Record)

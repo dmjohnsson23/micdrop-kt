@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith

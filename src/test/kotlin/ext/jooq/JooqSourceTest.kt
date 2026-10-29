@@ -1,10 +1,10 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.Collector
-import org.example.SourceError
-import org.example.asSink
-import org.example.check
-import org.example.migrate
+import micdrop.Collector
+import micdrop.SourceError
+import micdrop.asSink
+import micdrop.check
+import micdrop.migrate
 import java.sql.Time
 import java.sql.Timestamp
 import java.time.LocalDate

@@ -1,9 +1,9 @@
-package org.example.ext.jsoup
+package micdrop.ext.jsoup
 
-import org.example.Collector
-import org.example.asSink
-import org.example.check
-import org.example.migrate
+import micdrop.Collector
+import micdrop.asSink
+import micdrop.check
+import micdrop.migrate
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
 import kotlin.io.path.readText

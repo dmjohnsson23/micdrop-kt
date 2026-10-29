@@ -1,14 +1,14 @@
-package org.example.ext
+package micdrop.ext
 
-import org.example.Collector
-import org.example.Record
-import org.example.Sink
-import org.example.Source
-import org.example.SourceEntry
-import org.example.SourceError
-import org.example.ValueError
-import org.example.formatJsonValue
-import org.example.parseJsonValue
+import micdrop.Collector
+import micdrop.Record
+import micdrop.Sink
+import micdrop.Source
+import micdrop.SourceEntry
+import micdrop.SourceError
+import micdrop.ValueError
+import micdrop.formatJsonValue
+import micdrop.parseJsonValue
 import java.io.Reader
 import java.io.Writer
 import java.nio.charset.Charset

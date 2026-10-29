@@ -112,7 +112,7 @@ All date patterns are Java's, not strftime's: `MM/dd/yy`, not `%m/%d/%y`.
 |---|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `lookup(map)` | Convert through a map. Unknown values case an error.                                                                                                                                                                                                                    |
 | `lookup(name)` | The same with a lookup registered by `ItemContext.registerLookup(name, map)`.                                                                                                                                                                                           |
-| `dbLookup(db, table, keyColumn, valueColumn, ...)` | Convert through a query on a database table (needs [jOOQ](sources-and-sinks.md#databases); in `org.example.ext.jooq`). An unknown value causes an error, like `lookup`. Also takes a `DbLookup` in place of the first four, for caching. |
+| `dbLookup(db, table, keyColumn, valueColumn, ...)` | Convert through a query on a database table (needs [jOOQ](sources-and-sinks.md#databases); in `micdrop.ext.jooq`). An unknown value causes an error, like `lookup`. Also takes a `DbLookup` in place of the first four, for caching. |
 | `stringReplace(find, replace)` | Replace in text; `find` can be a `String` or a `Regex`.                                                                                                                                                                                                                 |
 | `strip()` | Trim whitespace from text.                                                                                                                                                                                                                                              |
 | `default(value)` | Replace null with a value.                                                                                                                                                                                                                                              |
@@ -139,7 +139,7 @@ All date patterns are Java's, not strftime's: `MM/dd/yy`, not `%m/%d/%y`.
 
 ## HTML and XML (extension)
 
-In `org.example.ext.jsoup`; needs [jsoup](https://jsoup.org) on the classpath. See
+In `micdrop.ext.jsoup`; needs [jsoup](https://jsoup.org) on the classpath. See
 [the guide](sources-and-sinks.md#html-and-xml) for the details.
 
 On an item:

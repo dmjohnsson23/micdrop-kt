@@ -1,12 +1,12 @@
-package org.example.examples
+package micdrop.examples
 
-import org.example.ext.jooq.InsertSink
-import org.example.ext.jsoup.XmlSource
-import org.example.ext.jsoup.atCss
-import org.example.ext.jsoup.css
-import org.example.ext.jsoup.takeContent
-import org.example.ext.jsoup.takeNodeName
-import org.example.migrate
+import micdrop.ext.jooq.InsertSink
+import micdrop.ext.jsoup.XmlSource
+import micdrop.ext.jsoup.atCss
+import micdrop.ext.jsoup.css
+import micdrop.ext.jsoup.takeContent
+import micdrop.ext.jsoup.takeNodeName
+import micdrop.migrate
 import org.jooq.DSLContext
 import java.nio.file.Path
 

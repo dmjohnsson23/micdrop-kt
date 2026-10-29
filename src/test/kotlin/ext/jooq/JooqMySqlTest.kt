@@ -1,9 +1,9 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.RootRecordContext
-import org.example.asSource
-import org.example.check
-import org.example.migrate
+import micdrop.RootRecordContext
+import micdrop.asSource
+import micdrop.check
+import micdrop.migrate
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
@@ -49,7 +49,7 @@ class JooqMySqlTest {
 
     private fun mysql(recorder: Recorder): DSLContext = DSL.using(MockConnection(recorder), SQLDialect.MYSQL)
 
-    private fun run(source: List<Map<String, Any?>>, sink: org.example.Sink, block: RootRecordContext.() -> Unit) =
+    private fun run(source: List<Map<String, Any?>>, sink: micdrop.Sink, block: RootRecordContext.() -> Unit) =
         migrate(source.asSource(), sink, block)
 
     @Test

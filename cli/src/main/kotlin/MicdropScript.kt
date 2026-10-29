@@ -1,4 +1,4 @@
-package org.example.cli
+package micdrop.cli
 
 import kotlinx.coroutines.runBlocking
 import kotlin.script.experimental.annotations.KotlinScript
@@ -22,10 +22,10 @@ abstract class MicdropScript(val args: Array<String>)
 
 object MicdropScriptConfiguration : ScriptCompilationConfiguration({
     defaultImports(
-        "org.example.*",
-        "org.example.ext.*",
-        "org.example.ext.jooq.*",
-        "org.example.ext.jsoup.*",
+        "micdrop.*",
+        "micdrop.ext.*",
+        "micdrop.ext.jooq.*",
+        "micdrop.ext.jsoup.*",
         DependsOn::class.qualifiedName!!,
         Repository::class.qualifiedName!!,
     )

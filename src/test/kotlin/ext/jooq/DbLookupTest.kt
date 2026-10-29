@@ -1,10 +1,10 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.Collector
-import org.example.asSink
-import org.example.check
-import org.example.PipelineError
-import org.example.migrate
+import micdrop.Collector
+import micdrop.asSink
+import micdrop.check
+import micdrop.PipelineError
+import micdrop.migrate
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
@@ -17,13 +17,13 @@ class DbLookupTest : InMemoryDatabaseTest() {
         mapOf("name" to "Buttercup", "asset" to "True Love", "count" to 0),
     )
 
-    private fun inventory(block: org.example.RootRecordContext.() -> Unit): List<Map<Any?, Any?>> {
+    private fun inventory(block: micdrop.RootRecordContext.() -> Unit): List<Map<Any?, Any?>> {
         val sink = mutableListOf<Collector>()
         migrate(JooqSource.table(db, "inventory"), sink.asSink(), block)
         return sink
     }
 
-    private fun lookupOne(key: Any?, build: org.example.ItemContext.() -> Unit): Any? {
+    private fun lookupOne(key: Any?, build: micdrop.ItemContext.() -> Unit): Any? {
         val sink = mutableListOf<Collector>()
         migrate(listOf(mapOf("k" to key)), sink) { take("k") { build(); put("v") } }
         return sink.single()["v"]

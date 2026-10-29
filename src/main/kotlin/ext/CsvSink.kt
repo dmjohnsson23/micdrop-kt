@@ -1,8 +1,8 @@
-package org.example.ext
+package micdrop.ext
 
-import org.example.Collector
-import org.example.Sink
-import org.example.SinkError
+import micdrop.Collector
+import micdrop.Sink
+import micdrop.SinkError
 import java.io.Writer
 import java.nio.charset.Charset
 import java.nio.file.Files

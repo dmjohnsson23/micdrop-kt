@@ -1,14 +1,14 @@
-package org.example
+package micdrop
 
-import org.example.examples.CsvsToSql
-import org.example.examples.JsonFilesToSql
-import org.example.examples.XmlToSql
-import org.example.ext.jooq.InMemoryDatabaseTest
-import org.example.ext.jooq.column
-import org.example.ext.jooq.count
-import org.example.ext.jooq.normalize
-import org.example.ext.jooq.rows
-import org.example.ext.jooq.table
+import micdrop.examples.CsvsToSql
+import micdrop.examples.JsonFilesToSql
+import micdrop.examples.XmlToSql
+import micdrop.ext.jooq.InMemoryDatabaseTest
+import micdrop.ext.jooq.column
+import micdrop.ext.jooq.count
+import micdrop.ext.jooq.normalize
+import micdrop.ext.jooq.rows
+import micdrop.ext.jooq.table
 import java.nio.file.Path
 import java.time.LocalDate
 import kotlin.test.Test

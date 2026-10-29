@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 /**
  * Marks the micdrop DSL receivers, so a nested block can't accidentally call methods of an outer receiver.

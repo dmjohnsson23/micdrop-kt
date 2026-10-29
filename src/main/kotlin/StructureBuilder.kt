@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 /**
  * Inverse of `dig`: store [value] at [keys] inside [root], creating intermediate structure as needed.

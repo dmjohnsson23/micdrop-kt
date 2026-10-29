@@ -1,10 +1,10 @@
-package org.example.ext
+package micdrop.ext
 
-import org.example.Collector
-import org.example.SourceError
-import org.example.asSink
-import org.example.check
-import org.example.migrate
+import micdrop.Collector
+import micdrop.SourceError
+import micdrop.asSink
+import micdrop.check
+import micdrop.migrate
 import org.junit.jupiter.api.io.TempDir
 import java.io.StringReader
 import java.io.StringWriter

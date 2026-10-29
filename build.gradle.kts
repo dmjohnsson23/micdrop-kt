@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "2.2.21"
 }
 
-group = "org.example"
+group = "micdrop"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -13,10 +13,10 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("org.apache.commons:commons-csv:1.14.0")
 
-    // Optional: only needed to use the database extension (org.example.ext.jooq). Compiled against, but not passed
+    // Optional: only needed to use the database extension (micdrop.ext.jooq). Compiled against, but not passed
     // on to projects using this library, which add jOOQ and a JDBC driver themselves if they use it.
     compileOnly("org.jooq:jooq:3.21.9")
-    // Likewise optional: only needed for the HTML/XML extension (org.example.ext.jsoup)
+    // Likewise optional: only needed for the HTML/XML extension (micdrop.ext.jsoup)
     compileOnly("org.jsoup:jsoup:1.23.2")
 
     testImplementation(kotlin("test"))
@@ -64,9 +64,9 @@ sourceSets.test {
 }
 
 mapOf(
-    "runCsvsToSqlExample" to "org.example.examples.CsvsToSql",
-    "runJsonFilesToSqlExample" to "org.example.examples.JsonFilesToSql",
-    "runXmlToSqlExample" to "org.example.examples.XmlToSql",
+    "runCsvsToSqlExample" to "micdrop.examples.CsvsToSql",
+    "runJsonFilesToSqlExample" to "micdrop.examples.JsonFilesToSql",
+    "runXmlToSqlExample" to "micdrop.examples.XmlToSql",
 ).forEach { (taskName, mainClassName) ->
     tasks.register<JavaExec>(taskName) {
         group = "examples"

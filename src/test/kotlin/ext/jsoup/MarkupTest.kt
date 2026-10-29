@@ -1,14 +1,14 @@
-package org.example.ext.jsoup
+package micdrop.ext.jsoup
 
-import org.example.Collector
-import org.example.PipelineError
-import org.example.Record
-import org.example.ValueError
-import org.example.asSink
-import org.example.check
-import org.example.itemOf
-import org.example.migrate
-import org.example.testRoot
+import micdrop.Collector
+import micdrop.PipelineError
+import micdrop.Record
+import micdrop.ValueError
+import micdrop.asSink
+import micdrop.check
+import micdrop.itemOf
+import micdrop.migrate
+import micdrop.testRoot
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import kotlin.test.Test

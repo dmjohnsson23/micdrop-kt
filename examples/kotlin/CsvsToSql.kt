@@ -1,8 +1,8 @@
-package org.example.examples
+package micdrop.examples
 
-import org.example.ext.CsvSource
-import org.example.ext.jooq.InsertSink
-import org.example.migrate
+import micdrop.ext.CsvSource
+import micdrop.ext.jooq.InsertSink
+import micdrop.migrate
 import org.jooq.DSLContext
 import java.nio.file.Path
 import java.time.LocalDate

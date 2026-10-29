@@ -179,7 +179,7 @@ empty are skipped (`ignoreEmptySubs = false` to keep them). Closing it closes ev
 ## HTML and XML
 
 HTML and XML are supported through [jsoup](https://jsoup.org). It is an optional dependency: add it to your own project
-(`implementation("org.jsoup:jsoup:<version>")`), and nothing else needs it. Everything is in `org.example.ext.jsoup`.
+(`implementation("org.jsoup:jsoup:<version>")`), and nothing else needs it. Everything is in `micdrop.ext.jsoup`.
 
 In this extension an element is a record whose items are its **attributes**, so `take("id")` reads `id="..."`. To get
 at what is inside an element, search it: `css`, `atCss`, `xpath`, `atXpath`. Both HTML and XML elements work the same
@@ -282,7 +282,7 @@ so that Micdrop doesn't have to. It is an optional dependency: add jOOQ and a JD
 (`implementation("org.jooq:jooq:<version>")`), and nothing else needs it.
 
 Everything is untyped, like the rest of Micdrop: tables and columns are strings, rows are maps, and no table
-definitions or code generation are needed. Everything is in `org.example.ext.jooq`.
+definitions or code generation are needed. Everything is in `micdrop.ext.jooq`.
 
 ```kotlin
 val db = DSL.using(dataSource, SQLDialect.MYSQL)        // or DSL.using(connection, SQLDialect.SQLITE), etc.

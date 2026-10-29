@@ -50,13 +50,13 @@ The code is documented with KDoc as well.
 
 Micdrop is not published yet; build it from source with `./gradlew build`. It needs a JDK (the build is configured
 for 24) and uses `kotlinx-serialization-json` and `commons-csv` internally. The code currently lives in the
-placeholder package `org.example`, with optional pieces in `org.example.ext`:
+ `micdrop` package, with optional pieces in `micdrop.ext`:
 
 ```kotlin
-import org.example.*
-import org.example.ext.*        // CSV and JSON-Lines
-import org.example.ext.jooq.*   // databases
-import org.example.ext.jsoup.*  // HTML and XML
+import micdrop.*
+import micdrop.ext.*        // CSV and JSON-Lines
+import micdrop.ext.jooq.*   // databases
+import micdrop.ext.jsoup.*  // HTML and XML
 ```
 
 Database and HTML/XML support are optional dependencies: they are built against [jOOQ](https://www.jooq.org) and
@@ -666,7 +666,7 @@ directory on your `PATH`; it needs Java 24 or later), and run a script with:
 
     micdrop my_script.micdrop.kts [args...]
 
-Scripts need no `package` or `import` lines for micdrop (`org.example` and its `ext` packages are imported
+Scripts need no `package` or `import` lines for micdrop (`micdrop` and its `ext` packages are imported
 automatically), and have the command-line arguments in `args`. Further libraries come from Maven with
 `@file:DependsOn("group:artifact:version")` (and `@file:Repository("https://...")` for repositories other than Maven
 Central). A script that fails exits with a nonzero status.

@@ -1,10 +1,10 @@
-package org.example.ext.jooq
+package micdrop.ext.jooq
 
-import org.example.RootRecordContext
-import org.example.SinkError
-import org.example.asSource
-import org.example.check
-import org.example.migrate
+import micdrop.RootRecordContext
+import micdrop.SinkError
+import micdrop.asSource
+import micdrop.check
+import micdrop.migrate
 import java.math.BigDecimal
 import kotlin.test.Test
 import kotlin.test.assertFailsWith

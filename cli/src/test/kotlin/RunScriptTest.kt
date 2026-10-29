@@ -1,4 +1,4 @@
-package org.example.cli
+package micdrop.cli
 
 import java.io.File
 import kotlin.io.path.createTempDirectory

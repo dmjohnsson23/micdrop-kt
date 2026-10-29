@@ -33,7 +33,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("org.example.cli.MainKt")
+    mainClass.set("micdrop.cli.MainKt")
     applicationName = "micdrop"
     applicationDefaultJvmArgs = listOf(
         "--enable-native-access=ALL-UNNAMED",
@@ -72,7 +72,7 @@ val appImage by tasks.registering(Exec::class) {
             "--name", "micdrop",
             "--input", installLib.get().asFile.path,
             "--main-jar", mainJar.get(),
-            "--main-class", "org.example.cli.MainKt",
+            "--main-class", "micdrop.cli.MainKt",
             // The Kotlin compiler uses a good deal of the JDK reflectively, so don't let jlink guess what is needed
             "--add-modules", "java.se,jdk.unsupported",
             "--java-options", "--enable-native-access=ALL-UNNAMED",

@@ -1,4 +1,4 @@
-package org.example
+package micdrop
 
 /** The output half of a record context: everything that deals with the collector and the sink. */
 interface Output {

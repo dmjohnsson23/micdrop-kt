@@ -1,4 +1,4 @@
-package org.example.examples
+package micdrop.examples
 
 import org.jooq.DSLContext
 import org.jooq.SQLDialect

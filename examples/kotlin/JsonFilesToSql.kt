@@ -1,9 +1,9 @@
-package org.example.examples
+package micdrop.examples
 
-import org.example.FilesSource
-import org.example.ext.jooq.InsertSink
-import org.example.migrate
-import org.example.parseJson
+import micdrop.FilesSource
+import micdrop.ext.jooq.InsertSink
+import micdrop.migrate
+import micdrop.parseJson
 import org.jooq.DSLContext
 import java.nio.file.Path
 
